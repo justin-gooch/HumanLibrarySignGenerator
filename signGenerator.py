@@ -29,7 +29,7 @@ if(len(sys.argv)>1):
         #if it's the title page; we go through it
         if workbookPages[i] == "Title page":
             #we start at 4 because the data starts on the 4th row; we go till no more rows
-            for y in range(4, workbookSheet.max_row+1):
+            for y in range(3, workbookSheet.max_row+1):
                 #store needed values in the sheet for printing
                 tmpList = []
                 #here we go in range from the start to the last column of the excel sheet
@@ -52,14 +52,15 @@ if(len(sys.argv)>1):
                     else:
                         tmpList.append(" ")
                 questionPageList.append(tmpList)
-    for x in range(0, len(titlePageList)):
+    #Start at 1 since we included the header so We can grab The headers for further modification. 
+    for x in range(1, len(titlePageList)):
         #initiate word document for editing
         document = Document()
         #here we create styles for text formatting. 
         style = document.styles['Title']
         font = style.font
         font.name = 'Oswald SemiBold'
-        font.size = Pt(65)
+        font.size = Pt(60)
         styles = document.styles
         style = styles.add_style('Name', WD_STYLE_TYPE.PARAGRAPH)
         font = style.font
@@ -82,19 +83,20 @@ if(len(sys.argv)>1):
         author = document.add_paragraph("By: " + str(titlePageList[x][0]))
         author.style=document.styles['Name']
         new_section=document.add_section(WD_SECTION.ODD_PAGE)
-        qh1 = document.add_paragraph("Opening Question")
+        qh1 = document.add_paragraph(titlePageList[0][2])
         qh1.style=document.styles['QuestionHeader']
         q1 = document.add_paragraph(titlePageList[x][2])
         q1.style=document.styles['Question']
-        qh2 = document.add_paragraph("Need Help?")
+        qh2 = document.add_paragraph(titlePageList[0][3])
         qh2.style=document.styles['QuestionHeader']
         q2 = document.add_paragraph(titlePageList[x][3])
         q2.style=document.styles['Question']
-        qh3 = document.add_paragraph("End Discussion Suggestion")
+        qh3 = document.add_paragraph(titlePageList[0][4])
         qh3.style=document.styles['QuestionHeader']
-        q3 = document.add_paragraph("I appreciate your interest in my topic. However, I think it is best that we end our discussion now and agree to disagree")
+        #q3 = document.add_paragraph("I appreciate your interest in my topic. However, I think it is best that we end our discussion now and agree to disagree")
+        q3=document.add_paragraph(titlePageList[x][4])
         q3.style=document.styles['Question']
-        qh4 = document.add_paragraph("Reminder")
+        qh4 = document.add_paragraph(titlePageList[0][5])
         qh4.style=document.styles['QuestionHeader']
         q4 = document.add_paragraph(titlePageList[x][5])
         q4.style=document.styles['Question']
@@ -133,7 +135,8 @@ if(len(sys.argv)>1):
         title.style=document.styles['Question']
         qPart = document.add_paragraph("Question suggestions for your book:")
         qPart.style=document.styles['QuestionHeader']
-        for y in range(0, len(questionPageList[x])):
+        #started at 2 so we don't get the title or subtitle
+        for y in range(2, len(questionPageList[x])):
             q1 = document.add_paragraph(questionPageList[x][y])
             q1.style=document.styles['Question']
         document.save(str(os.getcwd()) + os.sep + "wordFiles" + os.sep + str(questionPageList[x][0]) + "-Questions.docx")
